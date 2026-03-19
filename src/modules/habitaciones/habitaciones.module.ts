@@ -3,10 +3,10 @@ import { HabitacionService } from './habitaciones.service';
 import { HabitacionController } from './habitaciones.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Habitacion } from './entities/habitaciones.entity';
-import { Categoria } from '../categorias/entities/categoria.entity';
+import { CategoriasModule } from '../categorias/categorias.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Habitacion, Categoria])],
+  imports: [TypeOrmModule.forFeature([Habitacion]), CategoriasModule],
   controllers: [HabitacionController],
   providers: [HabitacionService],
 })

@@ -4,6 +4,10 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { HuespedesModule } from './modules/huespedes/huespedes.module';
+import { HabitacionesModule } from './modules/habitaciones/habitaciones.module';
+import { ReservasModule } from './modules/reservas/reservas.module';
+import { EstadiasModule } from './modules/estadias/estadias.module';
+import { ServiciosAdicionalesModule } from './modules/servicios-adicionales/servicios-adicionales.module';
 
 @Module({
   imports: [
@@ -13,6 +17,11 @@ import { HuespedesModule } from './modules/huespedes/huespedes.module';
     }),
     DatabaseModule,
     HuespedesModule,
+    HabitacionesModule,
+    ReservasModule,
+    EstadiasModule,
+    ServiciosAdicionalesModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],
