@@ -16,12 +16,14 @@ export class EstadiasService {
   async create(createEstadiaDto: CreateEstadiaDto) {
 
     // 🔥 VALIDACIÓN CLAVE: evitar sobreventa
+    const { huespedId, habitacionId, ...rest } = createEstadiaDto;
+
     const existe = await this.estadiaRepo.findOne({
       where: {
-        habitacion: { id: createEstadiaDto.habitacionId },
+        habitacion: { id: habitacionId },
         activa: true,
-        fecha_inicio: LessThanOrEqual(createEstadiaDto.fecha_fin),
-        fecha_fin: MoreThanOrEqual(createEstadiaDto.fecha_inicio),
+        fecha_inicio: LessThanOrEqual(rest.fecha_fin),
+        fecha_fin: MoreThanOrEqual(rest.fecha_inicio),
       },
     });
 
@@ -31,7 +33,11 @@ export class EstadiasService {
       );
     }
 
-    const nuevaEstadia = this.estadiaRepo.create(createEstadiaDto);
+    const nuevaEstadia = this.estadiaRepo.create({
+      ...rest,
+      huesped: { id: huespedId },
+      habitacion: { id: habitacionId },
+    });
     return this.estadiaRepo.save(nuevaEstadia);
   }
 
