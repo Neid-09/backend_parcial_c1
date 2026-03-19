@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Habitacion } from './entities/habitaciones.entity';
 import { Repository } from 'typeorm';
 import { CreateHabitacionDto } from './dto/create-habitaciones.dto';
-import { Categoria } from '../categorias/categoria.entity';
+import { Categoria } from '../categorias/entities/categoria.entity';
 
 @Injectable()
 export class HabitacionService {
