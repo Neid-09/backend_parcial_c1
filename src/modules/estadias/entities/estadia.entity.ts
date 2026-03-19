@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Huesped } from '../../huespedes/entities/huesped.entity';
+import { Habitacion } from '../../habitaciones/entities/habitaciones.entity';
 
 @Entity()
 export class Estadia {
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -12,13 +13,11 @@ export class Estadia {
   @Column({ type: 'date' })
   fecha_fin: Date;
 
-  @Column()
-  huespedId: number;
-  // 🔗 Relación: Estadía pertenece a un Huésped (N:1)
+  @ManyToOne(() => Huesped, (huesped) => huesped.estadias)
+  huesped: Huesped;
 
-  @Column()
-  habitacionId: number;
-  // 🔗 Relación: Estadía pertenece a una Habitación (N:1)
+  @ManyToOne(() => Habitacion, (habitacion) => habitacion.estadias)
+  habitacion: Habitacion;
 
   @Column({ default: true })
   activa: boolean;

@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Huesped } from '../../huespedes/entities/huesped.entity';
+import { Habitacion } from '../../habitaciones/entities/habitaciones.entity';
 
 @Entity()
 export class Reserva {
@@ -12,11 +14,9 @@ export class Reserva {
   @Column({ type: 'date' })
   fecha_fin: Date;
 
-  @Column()
-  huespedId: number;
-  // 🔗 Relación: Reserva pertenece a un Huésped (N:1)
+  @ManyToOne(() => Huesped, (huesped) => huesped.reservas)
+  huesped: Huesped;
 
-  @Column()
-  habitacionId: number;
-  // 🔗 Relación: Reserva pertenece a una Habitación (N:1)
+  @ManyToOne(() => Habitacion, (habitacion) => habitacion.reservas)
+  habitacion: Habitacion;
 }

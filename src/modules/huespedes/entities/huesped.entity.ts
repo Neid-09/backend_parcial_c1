@@ -1,6 +1,7 @@
 
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-//import { Reserva } from '../../reservas/reservas.entity';
+import { Reserva } from '../../reservas/entities/reserva.entity';
+import { Estadia } from '../../estadias/entities/estadia.entity';
 
 @Entity()
 export class Huesped {
@@ -17,7 +18,9 @@ export class Huesped {
   @Column({ nullable: true })
   telefono: string;
 
-  // relacion
-  /*@OneToMany(() => Reserva, (reserva) => reserva.huesped)
-  reservas: Reserva[];*/
+  @OneToMany(() => Reserva, (reserva) => reserva.huesped)
+  reservas: Reserva[];
+
+  @OneToMany(() => Estadia, (estadia) => estadia.huesped)
+  estadias: Estadia[];
 }
