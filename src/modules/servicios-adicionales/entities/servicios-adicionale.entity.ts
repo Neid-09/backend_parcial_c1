@@ -1,16 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-    
-@Entity('servicios_adicionales')
+
+@Entity ( 'servicios_adicionales' )
 export class ServiciosAdicional {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn ()
   id?: number;
 
-  @Column()
+  @Column ()
   nombre?: string;
 
-  @Column('decimal')
+  @Column ( 'decimal' )
   precio?: number;
 
-  @Column({ default: true })
+  @Column ( { default: true } )
   activo?: boolean;
 }
