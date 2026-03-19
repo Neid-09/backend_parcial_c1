@@ -26,4 +26,9 @@ export class EstadiasController {
   ) {
     return this.estadiasService.update(+id, updateEstadiaDto);
   }
+
+  @Get(':id/checkout')
+  checkout(@Param('id') id: string) {
+    return this.estadiasService.checkout(+id);
+  }
 }

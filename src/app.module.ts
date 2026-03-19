@@ -8,6 +8,7 @@ import { HabitacionesModule } from './modules/habitaciones/habitaciones.module';
 import { ReservasModule } from './modules/reservas/reservas.module';
 import { EstadiasModule } from './modules/estadias/estadias.module';
 import { ServiciosAdicionalesModule } from './modules/servicios-adicionales/servicios-adicionales.module';
+import { ConsumosModule } from './modules/consumos/consumos.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ServiciosAdicionalesModule } from './modules/servicios-adicionales/serv
     ReservasModule,
     EstadiasModule,
     ServiciosAdicionalesModule,
+    ConsumosModule,
 
   ],
   controllers: [AppController],

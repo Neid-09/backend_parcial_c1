@@ -18,7 +18,7 @@ export class EstadiasService {
     // 🔥 VALIDACIÓN CLAVE: evitar sobreventa
     const existe = await this.estadiaRepo.findOne({
       where: {
-        habitacionId: createEstadiaDto.habitacionId,
+        habitacion: { id: createEstadiaDto.habitacionId },
         activa: true,
         fecha_inicio: LessThanOrEqual(createEstadiaDto.fecha_fin),
         fecha_fin: MoreThanOrEqual(createEstadiaDto.fecha_inicio),
@@ -42,7 +42,10 @@ export class EstadiasService {
   // 🔄 UPDATE (con validación también)
   async update(id: number, updateData: UpdateEstadiaDto) {
 
-    const estadia = await this.estadiaRepo.findOne({ where: { id } });
+    const estadia = await this.estadiaRepo.findOne({ 
+      where: { id },
+      relations: ['habitacion']
+    });
 
     if (!estadia) {
       throw new BadRequestException('Estadía no encontrada');
@@ -50,8 +53,9 @@ export class EstadiasService {
 
     // 🔥 VALIDAR CRUCE DE FECHAS (igual que en create)
     const existe = await this.estadiaRepo.findOne({
+      relations: ['habitacion'],
       where: {
-        habitacionId: updateData.habitacionId ?? estadia.habitacionId,
+        habitacion: { id: updateData.habitacionId ?? estadia.habitacion.id },
         activa: true,
         fecha_inicio: LessThanOrEqual(updateData.fecha_fin ?? estadia.fecha_fin),
         fecha_fin: MoreThanOrEqual(updateData.fecha_inicio ?? estadia.fecha_inicio),
@@ -68,5 +72,59 @@ export class EstadiasService {
     Object.assign(estadia, updateData);
 
     return this.estadiaRepo.save(estadia);
+  }
+
+  // 📝 CHECK-OUT (Cálculo de Factura)
+  async checkout(id: number) {
+    const estadia = await this.estadiaRepo.findOne({
+      where: { id },
+      relations: ['habitacion', 'habitacion.categoria', 'consumos', 'consumos.servicio', 'huesped'],
+    });
+
+    if (!estadia) {
+      throw new BadRequestException('Estadía no encontrada');
+    }
+
+    const { habitacion, consumos } = estadia;
+    const precioHabitacion = Number(habitacion.categoria.precioBaseNoche);
+
+    // Calcular días (Noches) - Mínimo 1 noche si entra y sale el mismo día
+    const diffTime = Math.abs(new Date(estadia.fecha_fin).getTime() - new Date(estadia.fecha_inicio).getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const noches = diffDays === 0 ? 1 : diffDays;
+
+    const totalHabitacion = noches * precioHabitacion;
+
+    let totalConsumos = 0;
+    const detalleConsumos = consumos.map(consumo => {
+      const precioServicio = Number(consumo.servicio.precio);
+      const subtotal = consumo.cantidad * precioServicio;
+      totalConsumos += subtotal;
+      return {
+        servicio: consumo.servicio.nombre,
+        cantidad: consumo.cantidad,
+        precioUnitario: precioServicio,
+        subtotal
+      };
+    });
+
+    const totalFactura = totalHabitacion + totalConsumos;
+
+    // Opcional: Marcar estadía como inactiva (checkout realizado)
+    // estadia.activa = false;
+    // await this.estadiaRepo.save(estadia);
+
+    return {
+      estadiaId: estadia.id,
+      huesped: estadia.huesped.nombre,
+      habitacion: habitacion.numero,
+      categoria: habitacion.categoria.nombre,
+      noches,
+      precioPorNoche: precioHabitacion,
+      totalHabitacion,
+      detalleConsumos,
+      totalConsumos,
+      totalFactura
+    };
   }
 }

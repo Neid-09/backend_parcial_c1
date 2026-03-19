@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Huesped } from '../../huespedes/entities/huesped.entity';
 import { Habitacion } from '../../habitaciones/entities/habitaciones.entity';
+import { Consumo } from '../../consumos/entities/consumo.entity';
 
 @Entity()
 export class Estadia {
@@ -21,4 +22,7 @@ export class Estadia {
 
   @Column({ default: true })
   activa: boolean;
+
+  @OneToMany(() => Consumo, (consumo) => consumo.estadia)
+  consumos: Consumo[];
 }
