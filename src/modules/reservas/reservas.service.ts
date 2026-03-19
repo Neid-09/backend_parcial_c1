@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Reserva } from './entities/reserva.entity';
 import { CreateReservaDto } from './dto/create-reserva.dto';
 import { UpdateReservaDto } from './dto/update-reserva.dto';
 
 @Injectable()
 export class ReservasService {
+
+  constructor(
+    @InjectRepository(Reserva)
+    private readonly reservaRepo: Repository<Reserva>,
+  ) {}
+
   create(createReservaDto: CreateReservaDto) {
-    return 'This action adds a new reserva';
+    const nueva = this.reservaRepo.create(createReservaDto);
+    return this.reservaRepo.save(nueva);
   }
 
   findAll() {
-    return `This action returns all reservas`;
+    return this.reservaRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} reserva`;
-  }
+  // 🔄 UPDATE
+  async update(id: number, updateData: UpdateReservaDto) {
 
-  update(id: number, updateReservaDto: UpdateReservaDto) {
-    return `This action updates a #${id} reserva`;
-  }
+    const reserva = await this.reservaRepo.findOne({ where: { id } });
 
-  remove(id: number) {
-    return `This action removes a #${id} reserva`;
+    if (!reserva) {
+      throw new Error('Reserva no encontrada');
+    }
+
+    Object.assign(reserva, updateData);
+
+    return this.reservaRepo.save(reserva);
   }
 }

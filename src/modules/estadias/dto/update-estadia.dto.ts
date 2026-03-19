@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateEstadiaDto } from './create-estadia.dto';
-
-export class UpdateEstadiaDto extends PartialType(CreateEstadiaDto) {}
+export class UpdateEstadiaDto {
+  fecha_inicio?: Date;
+  fecha_fin?: Date;
+  huespedId?: number;
+  habitacionId?: number;
+  activa?: boolean;
+}
